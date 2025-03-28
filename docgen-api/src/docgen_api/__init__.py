@@ -28,7 +28,8 @@ csp = (
     .connect_src("'self'")
 )
 
-hsts = secure.StrictTransportSecurity().include_subdomains().preload().max_age(31536000)
+hsts = secure.StrictTransportSecurity(
+).include_subdomains().preload().max_age(31536000)
 referrer = secure.ReferrerPolicy().no_referrer()
 cache_value = secure.CacheControl().no_store().max_age(0)
 xfo_value = secure.XFrameOptions().deny()
@@ -48,7 +49,8 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "development")):
     # All configuration are in config file
     app.config.from_object(get_named_config(run_mode))
 
-    CORS(app, resources={r"/*": {"origins": allowedorigins()}}, supports_credentials=True)
+    CORS(app, resources={r"/*": {"origins": allowedorigins()}},
+         supports_credentials=True)
 
     # Register blueprints
     app.register_blueprint(API_BLUEPRINT)  # Create the database (run once)
@@ -71,6 +73,12 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "development")):
         g.origin_url = request.environ.get("HTTP_ORIGIN", "localhost")
 
     build_cache(app)
+
+    @app.teardown_appcontext
+    def shutdown_session(exception=None):  # pylint: disable=unused-argument
+        """Execute teardown actions."""
+        db.session.remove()
+        db.engine.dispose()
 
     @app.after_request
     def set_secure_headers(response):

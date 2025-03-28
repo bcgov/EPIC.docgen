@@ -1,18 +1,14 @@
 replicaCount: 1
 
 image:
-  repository: docgen-api
+  repository: image-registry.openshift-image-registry.svc:5000/c8b80a-tools/docgen-api
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "dev"
 
 resources:
-  cpu:
-    limit: 250m
-    request: 150m
-  memory:
-    limit: 384Mi
-    request: 256Mi
+  cpu: 200m
+  memory: 300Mi
 
 database:
   secret: docgen-patroni
@@ -30,13 +26,13 @@ service:
 auth:
   jwt:
     alg: RS256
-    aud: docgen-web
+    aud: epic.docgen
     cacheEnabled: true
-    issuer: https://test.loginproxy.gov.bc.ca/auth/realms/eao-epic
+    issuer: https://dev.loginproxy.gov.bc.ca/auth/realms/eao-epic
     cacheTimeout: "300"
-    wellKnownConfig: https://test.loginproxy.gov.bc.ca/auth/realms/eao-epic/.well-known/openid-configuration
+    wellKnownConfig: https://dev.loginproxy.gov.bc.ca/auth/realms/eao-epic/.well-known/openid-configuration
   keycloak:
-    uri: https://test.loginproxy.gov.bc.ca
+    uri: https://dev.loginproxy.gov.bc.ca
     realm:
     adminClientId:
     adminClientSecret:

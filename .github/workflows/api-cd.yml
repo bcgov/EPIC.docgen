@@ -1,4 +1,4 @@
-name: SCAFFOLD API CD
+name: DOCGEN API CD
 
 
 on:
@@ -6,7 +6,7 @@ on:
     branches:
       - develop
     paths:
-      - "scaffold-api/**"
+      - "docgen-api/**"
   workflow_dispatch:
     inputs:
       environment:
@@ -17,17 +17,17 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: ./scaffold-api
+    working-directory: ./docgen-api
 
 env:
-  APP_NAME: "scaffold-api"
+  APP_NAME: "docgen-api"
   TAG_NAME: "${{ github.event.inputs.environment || 'dev' }}" # If the environment type is manually selected, use the input value; otherwise, use 'dev' as default
 
 jobs:
   api-cd:
     runs-on: ubuntu-20.04
 
-    if: github.repository == 'bcgov/EPIC.scaffold'
+    if: github.repository == 'bcgov/EPIC.docgen'
     environment:
       name: "dev"
 
@@ -59,4 +59,4 @@ jobs:
       - name: Rollout
         shell: bash
         run: |
-          oc rollout status dc/${{ env.APP_NAME }} -n ${{ secrets.OPENSHIFT_REPOSITORY }}-${{ env.TAG_NAME }} -w
+          oc rollout restart deployment/${{ env.APP_NAME }} -n ${{ secrets.OPENSHIFT_REPOSITORY }}-${{ env.TAG_NAME }}
