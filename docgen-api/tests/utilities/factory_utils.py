@@ -20,6 +20,7 @@ from flask import g
 
 from docgen_api.config import get_named_config
 
+
 CONFIG = get_named_config('testing')
 fake = Faker()
 

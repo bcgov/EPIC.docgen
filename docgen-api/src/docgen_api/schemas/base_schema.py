@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Super class to handle all operations related to base schema."""
-from compliance_api.exceptions import BadRequestError
-from compliance_api.models.db import ma
 from flask import json
 from marshmallow import Schema, fields, post_dump
+
+from docgen_api.exceptions import BadRequestError
+from docgen_api.models.db import ma
 
 
 class BaseSchema(Schema):  # pylint: disable=too-many-ancestors, too-few-public-methods
@@ -40,7 +41,8 @@ class BaseSchema(Schema):  # pylint: disable=too-many-ancestors, too-few-public-
     class Meta:  # pylint: disable=too-few-public-methods
         """Meta class to declare any class attributes."""
 
-        datetimeformat = "%Y-%m-%dT%H:%M:%S+00:00"  # Default output date format.
+        # Default output date format.
+        datetimeformat = "%Y-%m-%dT%H:%M:%S+00:00"
 
     created_by = fields.Function(
         lambda obj: (
