@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* Base styles */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            color: #333;
+        }
+        
+        /* Header styles */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        .header h2 {
+            color: #34495e;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .header-meta {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        /* Content styles */
+        .content {
+            margin-top: 20px;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            color: #2c3e50;
+            border-bottom: 1px solid #3498db;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .subsection {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        .subsection-title {
+            color: #34495e;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        /* Table styles */
+        .table-container {
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        /* List styles */
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        
+        /* Text styles */
+        .text-center {
+            text-align: center;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .italic {
+            font-style: italic;
+        }
+        
+        /* Footer styles */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        
+        /* Utility classes */
+        .page-break {
+            page-break-after: always;
+        }
+        .indent {
+            margin-left: 20px;
+        }
+        .signature-block {
+            margin-top: 50px;
+        }
+        .signature-line {
+            width: 200px;
+            border-bottom: 1px solid #000;
+            margin: 50px auto 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <h1>{{ title }}</h1>
+        {% if subtitle %}
+        <h2>{{ subtitle }}</h2>
+        {% endif %}
+        <div class="header-meta">
+            {% if document_number %}
+            <p>Document Number: {{ document_number }}</p>
+            {% endif %}
+            {% if date %}
+            <p>Date: {{ date }}</p>
+            {% endif %}
+            {% if reference_number %}
+            <p>Reference: {{ reference_number }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        {% for section in sections %}
+        <div class="section">
+            <h2 class="section-title">{{ section.title }}</h2>
+            
+            {% if section.content %}
+            <div class="section-content">
+                {{ section.content | safe }}
+            </div>
+            {% endif %}
+
+            {% if section.table %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            {% for header in section.table.headers %}
+                            <th>{{ header }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in section.table.rows %}
+                        <tr>
+                            {% for cell in row %}
+                            <td>{{ cell }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
+            {% if section.subsections %}
+                {% for subsection in section.subsections %}
+                <div class="subsection">
+                    <h3 class="subsection-title">{{ subsection.title }}</h3>
+                    <div class="subsection-content">
+                        {{ subsection.content | safe }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <!-- Attachments Section -->
+        {% if attachments %}
+        <div class="section">
+            <h2 class="section-title">Attachments</h2>
+            <ul>
+                {% for attachment in attachments %}
+                <li>{{ attachment.name }} - {{ attachment.description }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Signature Section -->
+        {% if signatures %}
+        <div class="section">
+            <h2 class="section-title">Signatures</h2>
+            {% for signature in signatures %}
+            <div class="signature-block">
+                <div class="signature-line"></div>
+                <p class="text-center">{{ signature.name }}</p>
+                <p class="text-center">{{ signature.title }}</p>
+                <p class="text-center">{{ signature.date }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Generated on {{ now.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        {% if footer_text %}
+        <p>{{ footer_text }}</p>
+        {% endif %}
+        {% if page_numbers %}
+        <p>Page {{ page_number }} of {{ total_pages }}</p>
+        {% endif %}
+    </div>
+</body>
+</html> 
