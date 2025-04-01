@@ -11,10 +11,10 @@ from docgen_api.models.template import Template
 
 # Get wkhtmltopdf path from environment or use default based on OS
 WKHTMLTOPDF_PATH = os.getenv('WKHTMLTOPDF_PATH', {
-    'win32': r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe',  # Windows path
-    'linux': '/usr/bin/wkhtmltopdf',  # Linux path
+    'nt': r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe',  # Windows path
+    'posix': '/usr/bin/wkhtmltopdf',  # Unix/Linux path
     'darwin': '/usr/local/bin/wkhtmltopdf'  # MacOS path
-}[os.name if os.name != 'nt' else 'win32'])
+}[os.name])
 
 # Configure pdfkit options
 PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_PATH)
