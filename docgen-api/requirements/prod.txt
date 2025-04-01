@@ -29,3 +29,4 @@ Jinja2
 WeasyPrint
 Flask-WeasyPrint
 mccabe==0.6.1
+pdfkit==1.0.0
