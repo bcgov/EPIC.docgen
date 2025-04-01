@@ -28,3 +28,4 @@ importlib-resources
 Jinja2
 WeasyPrint
 Flask-WeasyPrint
+mccabe==0.6.1
