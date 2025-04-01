@@ -15,6 +15,7 @@ from docgen_api.config import get_named_config
 from docgen_api.models import db, ma, migrate
 from docgen_api.utils.cache import cache
 from docgen_api.utils.util import allowedorigins
+from docgen_api.resources import API_BLUEPRINT, OPS_BLUEPRINT
 
 
 # Security Response headers
@@ -41,7 +42,6 @@ secure_headers = secure.Secure(
 def create_app(run_mode=os.getenv("FLASK_ENV", "development")):
     """Create flask app."""
     # pylint: disable=import-outside-toplevel
-    from docgen_api.resources import API_BLUEPRINT
 
     # Flask app initialize
     app = Flask(__name__)
@@ -54,6 +54,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "development")):
 
     # Register blueprints
     app.register_blueprint(API_BLUEPRINT)  # Create the database (run once)
+    app.register_blueprint(OPS_BLUEPRINT)  # Register OPS endpoints
 
     # Setup jwt for keycloak
     if os.getenv("FLASK_ENV", "production") != "testing":
