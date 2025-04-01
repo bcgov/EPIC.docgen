@@ -12,12 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Endpoints to check and manage the health of the service."""
-from api.models import db
+from flask import current_app
 from flask_restx import Namespace, Resource
 from sqlalchemy import exc, text
 
+from docgen_api.models import db
 
-API = Namespace('OPS', description='Service - OPS checks')
+
+API = Namespace('ops', description='Service - OPS checks')
 
 SQL = text('select 1')
 
@@ -33,7 +35,8 @@ class Healthz(Resource):
     def get():
         """Return a JSON object stating the health of the Service and dependencies."""
         try:
-            db.session.execute(SQL)
+            with current_app.app_context():
+                db.session.execute(SQL)
         except exc.SQLAlchemyError:
             return {'message': 'api is down'}, 500
 
@@ -48,5 +51,10 @@ class Readyz(Resource):
     @staticmethod
     def get():
         """Return a JSON object that identifies if the service is setupAnd ready to work."""
-        # TODO: add a poll to the DB when called
+        try:
+            with current_app.app_context():
+                db.session.execute(SQL)
+        except exc.SQLAlchemyError:
+            return {'message': 'api is not ready'}, 500
+
         return {'message': 'api is ready'}, 200
