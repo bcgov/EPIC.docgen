@@ -16,11 +16,9 @@
 """Template Schema."""
 
 
-from marshmallow import EXCLUDE, fields, pre_load, validate
-
 from docgen_api.models.template import Template
-
 from .base_schema import AutoSchemaBase, BaseSchema
+from marshmallow import EXCLUDE, fields, pre_load, validate
 
 
 class TemplateSchema(AutoSchemaBase):  # pylint: disable=too-many-ancestors
@@ -39,11 +37,11 @@ class TemplateCreateSchema(BaseSchema):  # pylint: disable=too-many-ancestors
 
     template_key = fields.Str(
         metadata={
-            "description": "Unique key of the template (only alphabets allowed)"},
+            "description": "Unique key of the template (only alphabets and underscores allowed)"},
         required=True,
         validate=validate.Regexp(
-            r'^[A-Za-z]+$',
-            error='template_key must contain only alphabetic characters'
+            r'^[A-Za-z_]+$',
+            error='template_key must contain only alphabetic characters and underscores'
         )
     )
     app = fields.Str(
