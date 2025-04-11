@@ -1,4 +1,4 @@
-FROM python:3.9-buster
+FROM python:3.9-bullseye
 
 USER root
 
@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y \
     libcairo2-dev \
     libcairo-gobject2 \
     libcairo2 \
+    pango1.0-tools \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -50,5 +51,6 @@ ENV PYTHONPATH=/opt/app-root/src
 # Set GTK3 path for WeasyPrint
 ENV GTK_PATH=/usr/lib/x86_64-linux-gnu
 ENV LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
+ENV PANGO_LIBDIR=/usr/lib/x86_64-linux-gnu
 
 ENTRYPOINT ["bash", "docker-entrypoint.sh"]
