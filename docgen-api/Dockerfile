@@ -11,16 +11,20 @@ RUN apt-get update && apt-get install -y \
     python3-wheel \
     python3-cffi \
     libffi-dev \
+    libpango1.0-dev \
     libpango-1.0-0 \
     libharfbuzz0b \
+    libharfbuzz-dev \
     libpangoft2-1.0-0 \
     libgdk-pixbuf2.0-0 \
+    libgdk-pixbuf2.0-dev \
     libgirepository-1.0-1 \
     gir1.2-gtk-3.0 \
     libgirepository1.0-dev \
     libglib2.0-dev \
     libcairo2-dev \
-    libgdk-pixbuf2.0-dev \
+    libcairo-gobject2 \
+    libcairo2 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -45,5 +49,6 @@ ENV PYTHONPATH=/opt/app-root/src
 
 # Set GTK3 path for WeasyPrint
 ENV GTK_PATH=/usr/lib/x86_64-linux-gnu
+ENV LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
 
 ENTRYPOINT ["bash", "docker-entrypoint.sh"]
