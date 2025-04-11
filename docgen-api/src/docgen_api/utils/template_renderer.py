@@ -1,23 +1,39 @@
 """Utility functions for template rendering."""
 
 import os
+import sys
 from typing import Any, Dict
 
-import pdfkit
 from jinja2 import BaseLoader, Environment, select_autoescape
+from weasyprint import HTML, CSS
+from weasyprint.text.fonts import FontConfiguration
 
 from docgen_api.models.template import Template
 
 
-# Get wkhtmltopdf path from environment or use default based on OS
-WKHTMLTOPDF_PATH = os.getenv('WKHTMLTOPDF_PATH', {
-    'nt': r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe',  # Windows path
-    'posix': '/usr/bin/wkhtmltopdf',  # Unix/Linux path
-    'darwin': '/usr/local/bin/wkhtmltopdf'  # MacOS path
-}[os.name])
-
-# Configure pdfkit options
-PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_PATH)
+# Platform-specific setup
+if sys.platform == 'win32':
+    # Windows paths
+    gtk_path = r'C:\Program Files\GTK3-Runtime Win64\bin'
+    if os.path.exists(gtk_path) and gtk_path not in os.environ['PATH']:
+        os.environ['PATH'] = gtk_path + os.pathsep + os.environ['PATH']
+elif sys.platform == 'darwin':
+    # macOS paths
+    possible_gtk_paths = [
+        '/usr/local/lib',  # Homebrew default path
+        '/opt/homebrew/lib',  # Apple Silicon Homebrew path
+        '/usr/lib'  # System path
+    ]
+    for path in possible_gtk_paths:
+        if os.path.exists(path):
+            if path not in os.environ['PATH']:
+                os.environ['PATH'] = path + os.pathsep + os.environ['PATH']
+            break
+else:
+    # POSIX (Linux/OpenShift) paths
+    gtk_path = os.environ.get('GTK_PATH', '/usr/lib/x86_64-linux-gnu')
+    if os.path.exists(gtk_path) and gtk_path not in os.environ['PATH']:
+        os.environ['PATH'] = gtk_path + os.pathsep + os.environ['PATH']
 
 
 class DatabaseLoader(BaseLoader):
@@ -73,7 +89,7 @@ def render_html(template_key: str, data: Dict[str, Any]) -> str:
 
 
 def render_pdf(html_content: str) -> bytes:
-    """Convert HTML to PDF using pdfkit.
+    """Convert HTML to PDF using WeasyPrint.
 
     Args:
         html_content: HTML content to convert
@@ -82,28 +98,107 @@ def render_pdf(html_content: str) -> bytes:
         bytes: PDF content
 
     Raises:
-        RuntimeError: If wkhtmltopdf is not installed or accessible
+        RuntimeError: If PDF generation fails
     """
     try:
-        options = {
-            'encoding': 'UTF-8',
-            'no-outline': None,
-            'quiet': ''
-        }
+        # Configure font settings
+        font_config = FontConfiguration()
 
-        # Check if wkhtmltopdf exists at the configured path
-        if not os.path.exists(WKHTMLTOPDF_PATH):
-            raise RuntimeError(
-                f"wkhtmltopdf not found at {WKHTMLTOPDF_PATH}. Please ensure wkhtmltopdf is installed."
-            )
+        # Create HTML object with base_url to handle relative paths
+        html = HTML(string=html_content, base_url='file:///')
 
-        return pdfkit.from_string(
-            html_content,
-            False,
-            options=options,
-            configuration=PDFKIT_CONFIG
+        # Add CSS for better PDF rendering
+        css = CSS(string='''
+            @page {
+                size: A4;
+                margin: 1cm;
+            }
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+            }
+        ''', font_config=font_config)
+
+        # Generate PDF with explicit configuration
+        pdf_bytes = html.write_pdf(
+            stylesheets=[css],
+            font_config=font_config,
+            presentational_hints=True
         )
-    except OSError as e:
-        raise RuntimeError(
-            f"Error executing wkhtmltopdf. Please ensure it's properly installed. Error: {str(e)}"
-        ) from e
+        return pdf_bytes
+
+    except Exception as e:
+        if sys.platform == 'win32':
+            # Windows error handling
+            gtk_path = r'C:\Program Files\GTK3-Runtime Win64\bin'
+            if not os.path.exists(gtk_path):
+                error_msg = (
+                    f"GTK3 Runtime not found at {gtk_path}. "
+                    f"Please install GTK3 Runtime from: "
+                    f"https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases"
+                )
+            else:
+                # Check for required DLLs
+                required_dlls = [
+                    'gobject-2.0-0.dll',
+                    'glib-2.0-0.dll',
+                    'cairo-2.dll',
+                    'pango-1.0-0.dll',
+                    'pangocairo-1.0-0.dll'
+                ]
+                missing_dlls = [
+                    dll for dll in required_dlls
+                    if not os.path.exists(os.path.join(gtk_path, dll))
+                ]
+                if missing_dlls:
+                    error_msg = (
+                        f"Missing required GTK3 DLLs: {', '.join(missing_dlls)}. "
+                        f"Please reinstall GTK3 Runtime."
+                    )
+                else:
+                    error_msg = (
+                        f"Error generating PDF with WeasyPrint on Windows. "
+                        f"GTK3 is installed but there might be a version mismatch. "
+                        f"Error: {str(e)}"
+                    )
+        elif sys.platform == 'darwin':
+            # macOS error handling
+            possible_gtk_paths = [
+                '/usr/local/lib',
+                '/opt/homebrew/lib',
+                '/usr/lib'
+            ]
+            found_path = None
+            for path in possible_gtk_paths:
+                if os.path.exists(path):
+                    found_path = path
+                    break
+
+            if not found_path:
+                error_msg = (
+                    "GTK3 libraries not found. Please install GTK3 using one of these methods:\n"
+                    "1. Using Homebrew: brew install gtk+3\n"
+                    "2. Using MacPorts: sudo port install gtk3"
+                )
+            else:
+                error_msg = (
+                    f"Error generating PDF with WeasyPrint on macOS. "
+                    f"GTK3 is installed at {found_path} but there might be an issue. "
+                    f"Error: {str(e)}"
+                )
+        else:
+            # POSIX (Linux/OpenShift) error handling
+            gtk_path = os.environ.get('GTK_PATH', '/usr/lib/x86_64-linux-gnu')
+            if not os.path.exists(gtk_path):
+                error_msg = (
+                    f"GTK3 libraries not found at {gtk_path}. "
+                    f"Please ensure all WeasyPrint dependencies are installed."
+                )
+            else:
+                error_msg = (
+                    f"Error generating PDF with WeasyPrint. "
+                    f"Please check WeasyPrint installation and dependencies. "
+                    f"Error: {str(e)}"
+                )
+
+        raise RuntimeError(error_msg) from e
