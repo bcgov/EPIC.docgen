@@ -26,6 +26,7 @@ flask_cors
 pyhumps
 importlib-resources
 Jinja2
+pydyf==0.8.0
 WeasyPrint==60.1
 cffi>=1.15.0
 Pillow>=9.0.0
