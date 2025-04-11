@@ -200,4 +200,4 @@ def render_pdf(html_content: str) -> bytes:
                     f"Error: {str(e)}"
                 )
 
-        raise RuntimeError(error_msg) from e
+        raise Exception(error_msg) from e
