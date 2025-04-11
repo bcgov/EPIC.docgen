@@ -105,7 +105,7 @@ def render_pdf(html_content: str) -> bytes:
         font_config = FontConfiguration()
 
         # Create HTML object with base_url to handle relative paths
-        html = HTML(string=html_content, base_url='file:///')
+        html = HTML(string=html_content)
 
         # Add CSS for better PDF rendering
         css = CSS(string='''
@@ -117,13 +117,12 @@ def render_pdf(html_content: str) -> bytes:
                 font-family: Arial, sans-serif;
                 line-height: 1.6;
             }
-        ''', font_config=font_config)
+        ''')
 
         # Generate PDF with explicit configuration
         pdf_bytes = html.write_pdf(
             stylesheets=[css],
-            font_config=font_config,
-            presentational_hints=True
+            font_config=font_config
         )
         return pdf_bytes
 
