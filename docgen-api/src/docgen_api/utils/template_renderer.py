@@ -70,8 +70,8 @@ def create_jinja_env():
         loader=DatabaseLoader(),
         autoescape=select_autoescape(['html']),
         enable_async=True,
-        cache_size=100,  # Cache up to 100 templates
-        auto_reload=False  # Disable auto reload since we handle it via database
+        cache_size=0,  # Disable caching
+        auto_reload=True  # Enable auto reload to reflect changes
     )
     return env
 
