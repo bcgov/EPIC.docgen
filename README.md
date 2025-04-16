@@ -9,14 +9,15 @@ Ensure Python 3.12.4 is installed in your WSL environment. Download it from the 
 
 ### 2. Set Up PYTHONPATH
 Add the following line to your `.bashrc` or `.zshrc` file to set the `PYTHONPATH` environment variable:
-export PYTHONPATH="/path/to/scaffold-api:${PYTHONPATH}"
+export PYTHONPATH="/path/to/docgen-api:${PYTHONPATH}"
 
 ### 3. Configure Environment Variables
-Create a `.env` file in your scaffold-api with the necessary configurations. Reference sample.env to see what variables you need to configure
+Create a `.env` file in your docgen-api with the necessary configurations. Reference sample.env to see what variables you need to configure
+Please check sample.env for variable references
 
 ### 4. Start Docker Compose
 In a separate terminal, launch Docker Compose to set up your containers:
-docker-compose up
+You can spin up the database using docker-compose {service_name} up
 
 ### 5. Run Setup
 Navigate to your project directory and run the setup command to prepare your development environment:
@@ -25,7 +26,6 @@ make setup
 ### 5. Run Server
 Once the setup is completed use make run to start the server:
 make run
-
 
 ## Backend Setup on Windows
 
@@ -41,24 +41,24 @@ make run
     - set FLASK_APP=app.py 
       set FLASK_ENV=development
       
-2. Configure `PYTHONPATH` to your project's folder location up to `scaffold-api/src`:
-    - set PYTHONPATH=path\to\scaffold-api\src &&    PYTHONPATH=path\to\scaffold-api
+2. Configure `PYTHONPATH` to your project's folder location up to `docgen-api/src`:
+    - set PYTHONPATH=path\to\docgen-api\src
 
 ## Step 2: Start Docker
 
 1. Open a terminal.
-2. Navigate to the `scaffold-api` directory:
-    cd scaffold-api
+2. Navigate to the `docgen-api` directory:
+    cd docgen-api
 
 3. Run the following command to start the services using Docker Compose:
     docker-compose up
 
-## Step 3: Set Up `scaffold-api`
+## Step 3: Set Up `docgen-api`
 
 1. Open a separate terminal.
 
 2. Navigate to the `` directory:
-    cd scaffold-api
+    cd docgen-api
 
 3. Create a virtual environment. Refer to the official Python documentation on how to create a virtual environment: [Python venv](https://docs.python.org/3/library/venv.html).
     python -m venv venv
@@ -72,6 +72,7 @@ make run
 
 6. Run your Flask app using the Flask CLI:
     - python -m flask run -p 5000
+7. You can debug the api in vs code or cursor using the launch.json settings in teh .vscode folder. Make sure the paths are correct in the setttings
 
 ## Front End Setup
 
