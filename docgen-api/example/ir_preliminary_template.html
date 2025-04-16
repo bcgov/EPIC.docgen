@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Inspection Report</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            font-size: 10pt;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0;
+            margin-bottom: 20px;
+            background-color: white;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            width: 100%;
+            padding: 0 15mm;
+        }
+
+        .header-logo {
+            height: 60px;
+            width: auto;
+        }
+
+        .header-title {
+            text-align: right;
+            font-size: 20px;
+            font-weight: bold;
+            color: #1d4e89;
+            line-height: 1.2;
+        }
+
+
+        .header img {
+            height: 60px;
+        }
+
+        .header h1 {
+            font-size: 14pt;
+            color: #456a9a;
+            margin: 0;
+        }
+
+        .photo-img {
+            width: 150px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        h2 {
+            page-break-before: always;
+            color: #2a2a2a;
+            font-size: 12pt;
+        }
+
+        .content {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 6px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            font-weight: bold;
+            width: 20%;
+            background-color: white;
+        }
+
+        .requirement-section {
+            margin-top: 30px;
+            border: 1px solid black;
+            padding: 15px;
+        }
+
+        .requirement-header {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .findings {
+            margin: 15px 0;
+        }
+
+        .findings strong {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .compliance-table {
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .compliance-table th {
+            background-color: #f5f5f5;
+        }
+
+        .compliance-table td {
+            width: 50%;
+        }
+
+        .appendix-list {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .department-info td {
+            width: 50%;
+            vertical-align: top;
+        }
+
+        .blue-link {
+            color: blue;
+            text-decoration: underline;
+        }
+
+        .photo-section {
+            margin: 20px 0;
+        }
+
+        .photo-caption {
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .actions-enforcement {
+            margin: 30px 0;
+        }
+
+        .actions-enforcement table {
+            margin-bottom: 20px;
+        }
+
+        .actions-enforcement th {
+            background-color: #f5f5f5;
+        }
+
+        .actions-enforcement td {
+            min-height: 50px;
+            white-space: normal !important;
+        }
+
+        .requirement-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .requirement-description {
+            margin: 10px 0;
+        }
+
+        .additional-source {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .document-title {
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+        .document-section {
+            margin-top: 4px;
+            font-weight: bold;
+        }
+
+        .document-description {
+            margin-top: 4px;
+            margin-bottom: 10px;
+            white-space: normal !important;
+        }
+
+        .findings-content {
+            margin-top: 10px;
+            white-space: normal !important;
+        }
+
+        /* Print-specific styles */
+        @media print {
+            @page {
+                size: A4;
+                margin: 100px 20px 20px 20px;
+
+                /* Top margin reserves space for header, bottom for footer */
+                @top-left {
+                    content: element(header);
+                }
+
+                @bottom-right {
+                    content: element(footer);
+                }
+
+                counter-increment: page;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                font-size: 10pt;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                height: 60px;
+                background-color: red;
+            }
+
+            .header-container {
+                display: flex;
+                position: running(header);
+                justify-content: space-between;
+                align-items: center;
+                height: 80px;
+                margin-top: 20px;
+                width: 190mm;
+                box-sizing: border-box;
+                background-color: white;
+                padding: 0 20px 20px 40px;
+            }
+
+            .header-logo {
+                height: 60px;
+                width: auto;
+            }
+
+            .header-title {
+                font-size: 16px;
+                font-weight: bold;
+                color: #1d4e89;
+                line-height: 1.2;
+                text-align: right;
+            }
+
+            .content {
+                padding: 0 15mm;
+            }
+
+            /* Page number counter */
+            .pageNumber:before {
+                content: counter(page);
+            }
+
+            .totalPages:before {
+                content: counter(pages);
+            }
+
+            /* First page content starts after header */
+            /* .content > table:first-of-type {
+                margin-top: 0;
+            } */
+
+            .footer {
+                position: running(footer);
+                width: 100%;
+                text-align: center;
+                height: 20px;
+                padding: 10px 40px;
+                font-size: 9pt;
+                color: #666;
+            }
+
+            /* Ensure tables don't break across pages */
+            /* table {
+                page-break-inside: avoid;
+            } */
+
+            td,
+            th {
+                padding: 6px 8px;
+            }
+
+            /* tr {
+                page-break-inside: avoid;
+            } */
+
+            h2 {
+                margin-top: 30px;
+                margin-bottom: 15px;
+            }
+        }
+
+        /* Remove any pre-wrap styles from rich text content */
+        td[style*="white-space: pre-wrap"] {
+            white-space: normal !important;
+        }
+
+        .findings-content,
+        .document-description,
+        td p {
+            margin: 0;
+            white-space: normal !important;
+        }
+    </style>
+    <script>
+        function stripStyles(html) {
+            return html.replace(/style="[^"]*"/g, '');
+        }
+    </script>
+</head>
+
+<body>
+    <!-- <div class="header"> -->
+    <div class="header-container">
+        <img src="{{ department_details.logo_url }}" class="header-logo" alt="EAO Logo">
+        <div class="header-title">INSPECTION RECORD</div>
+    </div>
+    <!-- </div> -->
+    <div class="content">
+        <!-- First page content -->
+        <table>
+            <tr>
+                <th>Project Name</th>
+                <td>{{ project_details.name }}</td>
+                <th>Inspection Status</th>
+                <td>{{ ir_status }}</td>
+            </tr>
+            <tr>
+                <th>EA Certificate #</th>
+                <td>{{ project_details.eac_certificate }}</td>
+                <th>Inspection No.</th>
+                <td>{{ inspection_details.ir_number }}</td>
+            </tr>
+            <tr>
+                <th>Project Status</th>
+                <td>{{ project_details.project_state }}</td>
+                <th>Inspection Start</th>
+                <td>{{ inspection_details.start_date }}</td>
+            </tr>
+            <tr>
+                <th>Inspection Type</th>
+                <td>{{ inspection_details.inspection_type }}</td>
+                <th>Initiation</th>
+                <td>{{ inspection_details.initiation }}</td>
+            </tr>
+            <tr>
+                <th>UTM</th>
+                <td colspan="3">{{ inspection_details.utm }}</td>
+            </tr>
+            <tr>
+                <th>Project Description</th>
+                <td colspan="3">{{ inspection_details.project_description }}</td>
+            </tr>
+            <tr>
+                <th>Location Description</th>
+                <td colspan="3">{{ inspection_details.location_description }}</td>
+            </tr>
+            <tr>
+                <th>Inspection Summary</th>
+                <td colspan="3">
+                    {{ inspection_scope | safe | replace('style="white-space: pre-wrap;"', '') }}
+                    </br>
+                    {% if preliminary_review_details %}
+                    {{ preliminary_review_details | safe | replace('style="white-space: pre-wrap;"', '') }}
+                    </br>
+                    {% endif %}
+                    {{ finding_statement | safe | replace('style="white-space: pre-wrap;"', '') }}
+                </td>
+            </tr>
+            <tr>
+                <th>In Attendance</th>
+                <td colspan="3">{{ officer_details.in_attendance }}</td>
+            </tr>
+            <tr>
+                <th>{{ project_details.proponent_label }}</th>
+                <td colspan="3">{{ project_details.proponent }}</td>
+            </tr>
+            <tr>
+                <th>Mailing Address</th>
+                <td colspan="3">{{ mailing_address }}</td>
+            </tr>
+            <tr>
+                <th>Inspecting Officer(s)</th>
+                <td colspan="3">{{ officer_details.primary_officer.name }}</td>
+            </tr>
+            <tr>
+                <th>Record Prepared By</th>
+                <td colspan="3">{{ officer_details.primary_officer.name }}</td>
+            </tr>
+            <tr>
+                <th>Record Approved By</th>
+                <td colspan="3">{{ officer_details.primary_officer.name }}</td>
+            </tr>
+        </table>
+
+        <!-- Add spacer before inspection details -->
+        <div class="header-spacer" style="display: none;"></div>
+        <div class="inspection-details">
+            <h2>INSPECTION DETAILS</h2>
+            {% for requirement in requirement_details %}
+            <table>
+                <!-- START: Handle the first requirement source details -->
+                {% if requirement.requirement_source_details and requirement.requirement_source_details|length > 0 and
+                requirement.requirement_source_details[0] %}
+                <tr>
+                    <td colspan="2">
+                        <strong>Requirement {{ requirement.sort_order }}: {{
+                            requirement.requirement_source_details[0].requirement_source_number }} of {{
+                            requirement.requirement_source_details[0].requirement_source_name }}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        {{ requirement.requirement_source_details[0].requirement_source_description | safe |
+                        replace('style="white-space: pre-wrap;"', '') }}
+                    </td>
+                </tr>
+                {% if requirement.requirement_source_details[0].requirement_documents %}
+                {% for doc in requirement.requirement_source_details[0].requirement_documents %}
+                <tr>
+                    <td colspan="2">
+                        <div class="document-title">{{ doc.document_title }}</div>
+                        {% if doc.section_number or doc.section_title %}
+                        <div class="document-section">Section {{ doc.section_number }} {{ doc.section_title }}</div>
+                        {% endif %}
+                        {% if doc.description %}
+                        <div class="document-description">{{ doc.description | safe | replace('style="white-space:
+                            pre-wrap;"', '') }}</div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+                {% endif %}
+                <!-- END: handle the first requirement source details -->
+                <!-- START: Handle the additional requirement source details -->
+                {% if requirement.requirement_source_details|length > 1 %}
+                {% for source in requirement.requirement_source_details[1:] %}
+                <tr>
+                    <td colspan="2">
+                        <div class="additional-source">
+                            <strong>Requirement {{ source.sort_order }}: {{ source.requirement_source_number }} of {{
+                                source.requirement_source_name }}</strong>
+                        </div>
+                        {% if source.requirement_documents %}
+                        {% for doc in source.requirement_documents %}
+                        <div class="document-title">{{ doc.document_title }}</div>
+                        {% if doc.section_number or doc.section_title %}
+                        <div class="document-section">Section {{ doc.section_number }} {{ doc.section_title }}</div>
+                        {% endif %}
+                        {% if doc.description %}
+                        <div class="document-description">{{ doc.description | safe | replace('style="white-space:
+                            pre-wrap;"', '') }}</div>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+                <!-- END: Handle the additional requirement source details -->
+                <tr>
+                    <td colspan="2">
+                        <div class="findings">
+                            <strong>Findings:</strong>
+                            <div class="findings-content">
+                                {{ requirement.requirement_findings | safe | replace('style="white-space: pre-wrap;"',
+                                '') }}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% if requirement.requirement_photos and requirement.requirement_photos|length > 0 %}
+                {% for photo in requirement.requirement_photos %}
+                <tr>
+                    <td colspan="2">
+                        <div class="photo-section">
+                            <img src="{{ photo.photo_url }}" alt="Photo {{ photo.photo_number }}" class="photo-img">
+                            <div class="photo-caption">
+                                Photo {{ photo.photo_number }}. {{ photo.photo_caption }}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+
+                {% if requirement.requirement_figures and requirement.requirement_figures|length > 0 %}
+                {% for figure in requirement.requirement_figures %}
+                <tr>
+                    <td colspan="2">
+                        <div class="photo-section">
+                            <img src="{{ figure.figure_url }}" alt="Figure {{ figure.figure_number }}" class="photo-img">
+                            <div class="photo-caption">
+                                Figure {{ figure.figure_number }}. {{ figure.figure_caption }}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+                <tr>
+                    <td width="30%" style="background-color: #e1e1e1">
+                        <div class="findings">Compliance Finding</div>
+                    </td>
+                    <td>
+                        {{ requirement.compliance_finding }}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="30%" style="background-color: #cccccc">
+                        <div class="findings">Enforcement Action</div>
+                    </td>
+                    <td>
+                        {{ requirement.enforcement_action }}
+                    </td>
+                </tr>
+            </table>
+            {% endfor %}
+
+            <div class="actions-enforcement">
+                <table>
+                    <tr>
+                        <th>Actions Required by {{ project_details.proponent_label }} and Additional Comments</th>
+                    </tr>
+                    <tr>
+                        <td>{{ action_required_by_rp | safe | replace('style="white-space: pre-wrap;"', '') }}</td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <th>Enforcement Summary</th>
+                    </tr>
+                    <tr>
+                        <td>{{ enforcement_summary | safe | replace('style="white-space: pre-wrap;"', '') }}</td>
+                    </tr>
+                </table>
+            </div>
+            {% if appendices %}
+            <h2>Appendices:</h2>
+            <table>
+                <tr>
+                    <td>
+                        {% for appendix in appendices %}
+                        Appendix {{ appendix.appendix_no }}: {{ appendix.document_title }}{% if not loop.last %}<br>{%
+                        endif
+                        %}
+                        {% endfor %}
+                    </td>
+                </tr>
+            </table>
+            {% endif %}
+
+            <h2>Environmental Assessment Office - Compliance & Enforcement Branch</h2>
+            <table class="department-info">
+                <tr>
+                    <td>
+                        {{ department_details.address }}<br>
+                        Victoria BC V8W 9V1
+                    </td>
+                    <td>
+                        Phone: {{ department_details.phone }}<br>
+                        Email: <a href="mailto:{{ department_details.email }}" class="blue-link">{{
+                            department_details.email
+                            }}</a><br>
+                        Website: <a href="{{ department_details.website }}" class="blue-link">{{
+                            department_details.website
+                            }}</a>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+    <div class="footer">
+        Page <span class="pageNumber"></span> of <span class="totalPages"></span>
+    </div>
+</body>
+
+</html>
