@@ -47,4 +47,12 @@ Open [http://localhost:5000/api](http://localhost:5000/api) to view it in the br
 
 Ensure the latest version of [VS Code](https://code.visualstudio.com) is installed.
 
-The [`launch.json`](.vscode/launch.json) is already configured with a launch task (SCAFFOLD-API Launch) that allows you to launch chrome in a debugging capacity and debug through code within the editor. 
+The [`launch.json`](.vscode/launch.json) is already configured with a launch task (SCAFFOLD-API Launch) that allows you to launch chrome in a debugging capacity and debug through code within the editor.
+
+## Usage
+You can use the /templates api endpoint to create or register a template in the backend. The template_key and app determines the uniqueness.
+You can create template create request with the html content of the template. Make sure you escape all the double quotes while sending the html content.
+DocGen-API uses jinja2 for template creation and weasyprint for pdf generation. When you create html template using jinja2 format, make sure it adhers to the rules of weasyprint library for better pdf generation experience.
+
+DocGen-API produces either html or pdf output as of now. You can use the /templates/render endpoint to create the output in the format you want. Refer the swagger doc for more detailed api usage
+You can find a sample template and its output pdf in the example folder
