@@ -13,9 +13,9 @@ from flask_cors import CORS
 from docgen_api.auth import jwt
 from docgen_api.config import get_named_config
 from docgen_api.models import db, ma, migrate
+from docgen_api.resources import API_BLUEPRINT, OPS_BLUEPRINT
 from docgen_api.utils.cache import cache
 from docgen_api.utils.util import allowedorigins
-from docgen_api.resources import API_BLUEPRINT, OPS_BLUEPRINT
 
 
 # Security Response headers
