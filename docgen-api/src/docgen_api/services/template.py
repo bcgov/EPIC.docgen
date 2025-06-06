@@ -50,10 +50,10 @@ class TemplateService:
         Raises:
             ResourceNotFoundError: If template with given key is not found
         """
-        template = Template.find_by_template_key(template_key)
+        template = Template.find_by_template_key_and_app(template_key, template_data.get('app'))
         if not template:
             raise ResourceNotFoundError(
-                f'Template with template_key {template_key} not found')
+                f'Template with template_key {template_key} and app {template_data.get("app")} not found')
 
         template.template_content = template_data.get('template_content')
         template.save()

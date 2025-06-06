@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: image-registry.openshift-image-registry.svc:5000/c72cba-tools/docgen-api
+  repository: image-registry.openshift-image-registry.svc:5000/c8b80a-tools/docgen-api
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "test"
@@ -33,7 +33,7 @@ auth:
     wellKnownConfig: https://test.loginproxy.gov.bc.ca/auth/realms/eao-epic/.well-known/openid-configuration
   keycloak:
     uri: https://test.loginproxy.gov.bc.ca
-    realm:
+    realm: eao-epic
     adminClientId:
     adminClientSecret:
 python:

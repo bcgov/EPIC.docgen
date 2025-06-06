@@ -14,11 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Template Schema."""
-
+from marshmallow import EXCLUDE, fields, pre_load, validate
 
 from docgen_api.models.template import Template
+
 from .base_schema import AutoSchemaBase, BaseSchema
-from marshmallow import EXCLUDE, fields, pre_load, validate
+from .common import is_base64
 
 
 class TemplateSchema(AutoSchemaBase):  # pylint: disable=too-many-ancestors
@@ -50,7 +51,9 @@ class TemplateCreateSchema(BaseSchema):  # pylint: disable=too-many-ancestors
         }
     )
     template_content = fields.Str(
-        metadata={"description": "The html template"})
+        metadata={"description": "The html template"},
+        validate=is_base64
+    )
 
     @pre_load
     def format_fields(self, data, **kwargs):  # pylint: disable=unused-argument
@@ -69,8 +72,16 @@ class TemplateCreateSchema(BaseSchema):  # pylint: disable=too-many-ancestors
 class TemplateUpdateSchema(BaseSchema):  # pylint: disable=too-many-ancestors
     """Template update Schema."""
 
+    app = fields.Str(
+        metadata={
+            "description": "The app name(eg: COMPLIANCE, SUBMIT, TRACK ...)",
+            "required": True
+        }
+    )
     template_content = fields.Str(
-        metadata={"description": "The html template"})
+        metadata={"description": "The html template"},
+        validate=is_base64
+    )
 
 
 class TemplateRenderSchema(BaseSchema):  # pylint: disable=too-many-ancestors

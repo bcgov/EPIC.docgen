@@ -1,42 +1,12 @@
 """Utility functions for template rendering."""
 
-import os
-import sys
+from base64 import b64decode
 from typing import Any, Dict
 
 from jinja2 import BaseLoader, Environment, select_autoescape
 from weasyprint import HTML
 
 from docgen_api.models.template import Template
-
-
-# # Platform-specific setup
-# if sys.platform == 'win32':
-#     # Windows paths - check both GTK3 Runtime and MSYS2 pacman
-#     gtk_paths = [
-#         r'C:\Program Files\GTK3-Runtime Win64\bin',
-#         r'C:\msys64\mingw64\bin'
-#     ]
-#     for gtk_path in gtk_paths:
-#         if os.path.exists(gtk_path) and gtk_path not in os.environ['PATH']:
-#             os.environ['PATH'] = gtk_path + os.pathsep + os.environ['PATH']
-# elif sys.platform == 'darwin':
-#     # macOS paths
-#     possible_gtk_paths = [
-#         '/usr/local/lib',  # Homebrew default path
-#         '/opt/homebrew/lib',  # Apple Silicon Homebrew path
-#         '/usr/lib'  # System path
-#     ]
-#     for path in possible_gtk_paths:
-#         if os.path.exists(path):
-#             if path not in os.environ['PATH']:
-#                 os.environ['PATH'] = path + os.pathsep + os.environ['PATH']
-#             break
-# else:
-#     # POSIX (Linux/OpenShift) paths
-#     gtk_path = os.environ.get('GTK_PATH', '/usr/lib/x86_64-linux-gnu')
-#     if os.path.exists(gtk_path) and gtk_path not in os.environ['PATH']:
-#         os.environ['PATH'] = gtk_path + os.pathsep + os.environ['PATH']
 
 
 class DatabaseLoader(BaseLoader):
@@ -57,7 +27,7 @@ class DatabaseLoader(BaseLoader):
             raise ValueError(f'Template {template_key} not found')
 
         # Return source, filename, and uptodate function
-        return template.template_content, template_key, lambda: True
+        return b64decode(template.template_content).decode('utf-8'), template_key, lambda: True
 
 
 def create_jinja_env():
