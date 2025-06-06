@@ -24,8 +24,9 @@ That are used to expose operational health information about the service, and me
 from flask import Blueprint
 
 from .apihelper import Api
-from .template import API as TEMPLATE_API
 from .ops import API as OPS_API
+from .template import API as TEMPLATE_API
+
 
 __all__ = ('API_BLUEPRINT', 'OPS_BLUEPRINT')
 

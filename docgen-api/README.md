@@ -51,7 +51,7 @@ The [`launch.json`](.vscode/launch.json) is already configured with a launch tas
 
 ## Usage
 You can use the /templates api endpoint to create or register a template in the backend. The template_key and app determines the uniqueness.
-You can create template create request with the html content of the template. Make sure you escape all the double quotes while sending the html content.
+You can create template create request with the html content of the template. Make sure you encode the template content to base64 before sending it to the backend.
 DocGen-API uses jinja2 for template creation and weasyprint for pdf generation. When you create html template using jinja2 format, make sure it adhers to the rules of weasyprint library for better pdf generation experience.
 
 DocGen-API produces either html or pdf output as of now. You can use the /templates/render endpoint to create the output in the format you want. Refer the swagger doc for more detailed api usage
