@@ -28,7 +28,6 @@ Flask-Caching==2.3.1
 flask-cors==6.0.0
 flask-jwt-oidc==0.7.0
 flask-mail==0.10.0
-marshmallow==3.20.1
 flask-marshmallow==0.15.0
 Flask-Migrate==4.1.0
 Flask-Moment==1.0.6
