@@ -111,7 +111,7 @@ class TemplateService:
         return Template.get_all()
 
     @classmethod
-    def render_template(cls, template_key: str, app: str, render_data: dict, output_type: str):
+    def render_template(cls, template_key: str, app: str, render_data: dict, output_type: str, use_total_pages: bool = False):
         """Render a template with given data.
 
         Args:
@@ -132,9 +132,9 @@ class TemplateService:
                 f'Template with key {template_key} and app {app} not found')
 
         # Render HTML
-        html_content = render_html(template_key, render_data)
+        html_content, template = render_html(template_key, render_data, use_total_pages)
 
         # Return based on output type
         if output_type == 'pdf':
-            return render_pdf(html_content)
+            return render_pdf(html_content, template, render_data, use_total_pages)
         return html_content
