@@ -46,7 +46,7 @@ def create_jinja_env():
     return env
 
 
-def render_html(template_key: str, data: Dict[str, Any]) -> str:
+def render_html(template_key: str, data: Dict[str, Any], use_total_pages: bool = False) -> str:
     """Render template with data to HTML.
 
     Args:
@@ -58,10 +58,11 @@ def render_html(template_key: str, data: Dict[str, Any]) -> str:
     """
     env = create_jinja_env()
     template = env.get_template(template_key)
-    return template.render(**data)
+    html = template.render(**data)
+    return html, template
 
 
-def render_pdf(html_content: str) -> bytes:
+def render_pdf(html_content: str, template: Template, data, use_total_pages: bool = False) -> bytes:
     """Convert HTML to PDF using WeasyPrint.
 
     Args:
@@ -76,7 +77,11 @@ def render_pdf(html_content: str) -> bytes:
     try:
         # Create HTML object from string content
         html = HTML(string=html_content)
-
+        if use_total_pages:
+            doc = html.render()
+            data['total_pages'] = len(doc.pages)
+            html_content = template.render(**data)
+            html = HTML(string=html_content)
         # Generate PDF with minimal configuration
         pdf_bytes = html.write_pdf(
             target=None,  # Returns bytes when target is None
