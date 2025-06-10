@@ -3,7 +3,7 @@
 from http import HTTPStatus
 from io import BytesIO
 
-from flask import send_file
+from flask import send_file, request
 from flask_restx import Namespace, Resource
 
 from docgen_api.auth import auth
@@ -95,6 +95,15 @@ class TemplateRender(Resource):
 
     @staticmethod
     @auth.require
+    @API.doc(
+        params={
+            "use_total_pages": {
+                "description": "True to have total_pages field injected while rendering",
+                "type": "boolean",
+                "required": False,
+            }
+        }
+    )
     @ApiHelper.swagger_decorators(API, endpoint_description="Render a template")
     @API.expect(ApiHelper.convert_ma_schema_to_restx_model(API, TemplateRenderSchema(), "TemplateRender"))
     @API.response(code=200, description="Template Rendered Successfully")
@@ -103,12 +112,14 @@ class TemplateRender(Resource):
     def post():
         """Render a template with provided data."""
         render_request = TemplateRenderSchema().load(API.payload)
+        use_total_pages = request.args.get('use_total_pages', 'false').lower() == 'true'
 
         rendered_content = TemplateService.render_template(
             template_key=render_request['template_key'],
             app=render_request['app'],
             render_data=render_request['data'],
-            output_type=render_request['output_type']
+            output_type=render_request['output_type'],
+            use_total_pages=use_total_pages
         )
 
         if render_request['output_type'] == 'pdf':
