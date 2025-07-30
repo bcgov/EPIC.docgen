@@ -128,11 +128,11 @@ class DockerConfig(_Config):  # pylint: disable=too-few-public-methods
     """In support of testing only.used by the py.test suite."""
 
     # POSTGRESQL
-    DB_USER = os.getenv('DATABASE_USERNAME', 'docgen')
-    DB_PASSWORD = os.getenv('DATABASE_PASSWORD', 'docgen')
-    DB_NAME = os.getenv('DATABASE_NAME', 'docgen')
-    DB_HOST = os.getenv('DATABASE_HOST', 'docgen-api-db')
-    DB_PORT = os.getenv('DATABASE_PORT', '5432')
+    DB_USER = os.getenv('DATABASE_DOCKER_USERNAME')
+    DB_PASSWORD = os.getenv('DATABASE_DOCKER_PASSWORD')
+    DB_NAME = os.getenv('DATABASE_DOCKER_NAME')
+    DB_HOST = os.getenv('DATABASE_DOCKER_HOST')
+    DB_PORT = os.getenv('DATABASE_DOCKER_PORT', '5432')
     SQLALCHEMY_DATABASE_URI = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{int(DB_PORT)}/{DB_NAME}'
 
     print(f'SQLAlchemy URL (Docker): {SQLALCHEMY_DATABASE_URI}')
