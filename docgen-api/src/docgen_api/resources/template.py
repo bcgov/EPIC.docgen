@@ -65,7 +65,7 @@ class Templates(Resource):
         return TemplateSchema(many=True).dump(templates), HTTPStatus.OK
 
     @staticmethod
-    @auth.require
+    @auth.require_api_key_or_jwt
     @ApiHelper.swagger_decorators(API, endpoint_description="Update a template")
     @API.expect(template_update_schema)
     @API.response(code=200, model=template_list_schema, description="Template Updated")
